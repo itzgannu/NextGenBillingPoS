@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">NextGen Billing PoS</string>
+    <string name="image_content_description">THIS IS AN IMAGE</string>
+    <string name="email_id">EMAIL ID</string>
+    <string name="password">PASSWORD</string>
+    <string name="sign_in">SIGN IN</string>
+    <string name="sign_up">NEW USER? SIGN UP!</string>
+    <string name="already_have_an_account">ALREADY HAVE AN ACCOUNT?</string>
+    <string name="forgot_password">FORGOT PASSWORD?</string>
 </resources>
