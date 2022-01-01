@@ -12,13 +12,20 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.Objects;
 
 import mu.psi.nextgen.databinding.ActivityRegistrationBinding;
+import mu.psi.nextgen.models.company.Admin;
+import mu.psi.nextgen.view.model.AdminVM;
 
 public class Registration extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
 
     ActivityRegistrationBinding binding;
+
+    private FirebaseAuth auth; AdminVM adminVM;
 
     Dialog dialog;
     AlertDialog.Builder builder;
@@ -31,6 +38,9 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         this.binding = ActivityRegistrationBinding.inflate(getLayoutInflater());
         setContentView(this.binding.getRoot());
 
+        auth = FirebaseAuth.getInstance();
+        adminVM = AdminVM.getInstance(getApplication());
+
         builder = new AlertDialog.Builder(this);
         builder.setView(R.layout.progress_bar);
         dialog = builder.create();
@@ -42,6 +52,17 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 
         this.binding.registrationScreen.setOnTouchListener(this);
         this.binding.registrationRegisterButton.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if(currentUser != null) {
+            //some one already logged in
+            informing_user();
+        }
     }
 
     @Override
@@ -68,13 +89,45 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.registration_register_button) {
-            progress_bar(true);
-            if (registrationFieldValidations()) {
-                //firebase sign up
-                //show dialog once registered successfully
-                progress_bar(false);
-            }
+            registerUser();
         }
+    }
+
+    void registerUser() {
+        progress_bar(true);
+        if (registrationFieldValidations()) {
+            String full_name = Objects.requireNonNull(this.binding.registrationFullName.getEditText()).getText().toString();
+            String email = Objects.requireNonNull(this.binding.registrationEmailId.getEditText()).getText().toString();
+            String code = Objects.requireNonNull(this.binding.registrationPasscode.getEditText()).getText().toString();
+            String company_name = Objects.requireNonNull(this.binding.registrationCompanyName.getEditText()).getText().toString();
+            Admin admin = new Admin(email,full_name,company_name);
+
+            auth.createUserWithEmailAndPassword(email, code)
+                    .addOnCompleteListener(this, task -> {
+                        if(task.isSuccessful()) {
+                            progress_bar(false);
+                            adminVM.writeAdminToRLDB(admin);
+                            informing_user();
+                        } else {
+                            progress_bar(false);
+                        }
+                    })
+                    .addOnFailureListener(this, e -> progress_bar(false))
+                    .addOnCanceledListener(this, () -> progress_bar(false));
+            clearTextFields();
+        }
+    }
+
+    void informing_user() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String registered = getString(R.string.registered);
+        String success = getString(R.string.success);
+        String okay = getString(R.string.okay);
+        builder.setMessage(registered)
+                .setTitle(success);
+        builder.setPositiveButton(okay, (dialog, id) -> dialog.dismiss());
+        builder.create();
+        builder.show();
     }
 
     void progress_bar(boolean show) {
@@ -156,6 +209,13 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
             this.binding.registrationCompanyName.setError(null);
             return true;
         }
+    }
+
+    void clearTextFields() {
+        Objects.requireNonNull(this.binding.registrationFullName.getEditText()).getText().clear();
+        Objects.requireNonNull(this.binding.registrationEmailId.getEditText()).getText().clear();
+        Objects.requireNonNull(this.binding.registrationPasscode.getEditText()).getText().clear();
+        Objects.requireNonNull(this.binding.registrationCompanyName.getEditText()).getText().clear();
     }
 
     @SuppressLint("ClickableViewAccessibility")
