@@ -10,4 +10,7 @@
     <color name="main_color">#F6BD3B</color>
     <color name="transparent">#00000000</color>
     <color name="grass_green">#7ED957</color>
+    <color name="dark_green">#006400</color>
+    <color name="red">#DD2C00</color>
+    <color name="biscuit">#757575</color>
 </resources>
