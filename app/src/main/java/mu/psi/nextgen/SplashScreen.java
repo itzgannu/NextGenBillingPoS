@@ -23,7 +23,7 @@ public class SplashScreen extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         this.binding.splashScreenLogo.setX(-2000);
-        this.binding.splashScreenLogo.animate().translationX(0).setDuration(2000);
+        this.binding.splashScreenLogo.animate().translationX(0).setDuration(1000);
 
         int SPLASH_SCREEN_DISPLAY_LENGTH = 2000;
         new Handler().postDelayed(new Runnable() {
