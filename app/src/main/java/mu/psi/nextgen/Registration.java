@@ -106,7 +106,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
                     .addOnCompleteListener(this, task -> {
                         if(task.isSuccessful()) {
                             progress_bar(false);
-                            adminVM.writeAdminToRLDB(admin);
+                            adminVM.writeAdminToCFS(Objects.requireNonNull(auth.getCurrentUser()).getUid(),admin);
                             informing_user();
                         } else {
                             progress_bar(false);

@@ -5,12 +5,12 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-import mu.psi.nextgen.firebase.Realtime;
+import mu.psi.nextgen.firebase.CompanyFirestore;
 import mu.psi.nextgen.models.company.Admin;
 
 public class AdminVM extends AndroidViewModel {
 
-    private final Realtime realTimeDataBase = new Realtime();
+    CompanyFirestore companyFirestore = new CompanyFirestore();
 
     private static AdminVM instance;
 
@@ -25,7 +25,7 @@ public class AdminVM extends AndroidViewModel {
         super(application);
     }
 
-    public void writeAdminToRLDB(Admin admin) {
-        this.realTimeDataBase.writeAdminData(admin);
+    public void writeAdminToCFS(String uuid, Admin admin) {
+        companyFirestore.createAdmin(uuid, admin);
     }
 }
