@@ -11,6 +11,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.Objects;
 
 import mu.psi.nextgen.databinding.ActivityAuthenticationBinding;
@@ -18,6 +21,8 @@ import mu.psi.nextgen.databinding.ActivityAuthenticationBinding;
 public class Authentication extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
 
     ActivityAuthenticationBinding binding;
+
+    private FirebaseAuth auth;
 
     Dialog dialog;
     AlertDialog.Builder builder;
@@ -29,6 +34,8 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
         this.binding = ActivityAuthenticationBinding.inflate(getLayoutInflater());
         setContentView(this.binding.getRoot());
+
+        auth = FirebaseAuth.getInstance();
 
         builder = new AlertDialog.Builder(this);
         builder.setView(R.layout.progress_bar);
@@ -46,11 +53,28 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if(currentUser != null) {
+            //some one already logged in
+            redirecting_to_place_holder();
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
         this.binding.authenticationScreenPasscode.setError(null);
         this.binding.authenticationScreenEmailId.setError(null);
+
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if(currentUser != null) {
+            //some one already logged in
+            redirecting_to_place_holder();
+        }
     }
 
     @Override
@@ -59,6 +83,12 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
         this.binding.authenticationScreenPasscode.setError(null);
         this.binding.authenticationScreenEmailId.setError(null);
+
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if(currentUser != null) {
+            //some one already logged in
+            redirecting_to_place_holder();
+        }
     }
 
     @Override
@@ -82,6 +112,19 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    void redirecting_to_place_holder() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String registered = getString(R.string.registered);
+        String success = getString(R.string.success);
+        String okay = getString(R.string.okay);
+        builder.setMessage(registered)
+                .setTitle(success);
+        builder.setPositiveButton(okay, (dialog, id) -> dialog.dismiss());
+        builder.create();
+        builder.show();
+        //go to other screen
+    }
+
     void onClickSignUp() {
         Intent splashIntent = new Intent(Authentication.this, Registration.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(splashIntent);
@@ -89,12 +132,25 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     }
 
     void onClickSignIn() {
+        progress_bar(true);
         this.binding.authenticationScreenEmailId.clearFocus();
         this.binding.authenticationScreenPasscode.clearFocus();
+
+        String email = Objects.requireNonNull(this.binding.authenticationScreenEmailId.getEditText()).getText().toString();
+        String code = Objects.requireNonNull(this.binding.authenticationScreenPasscode.getEditText()).getText().toString();
+
         if (authenticationFieldValidations()) {
-            Intent splashIntent = new Intent(Authentication.this, Authentication.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(splashIntent);
-            finish();
+            auth.signInWithEmailAndPassword(email, code)
+                    .addOnCompleteListener(this, task -> {
+                        if(task.isSuccessful()) {
+                            progress_bar(false);
+                            redirecting_to_place_holder();
+                        } else {
+                            progress_bar(false);
+                        }
+                    })
+                    .addOnFailureListener(this, e -> progress_bar(false))
+                    .addOnCanceledListener(this, () -> progress_bar(false));
         }
     }
 

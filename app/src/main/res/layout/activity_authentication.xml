@@ -71,13 +71,15 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:endIconMode="password_toggle"
             android:layout_marginTop="@dimen/medium_20">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/password"
                 android:textColor="@color/black"
+                android:inputType="textPassword"
+                android:hint="@string/password"
                 app:hintTextColor="@color/biscuit"
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
