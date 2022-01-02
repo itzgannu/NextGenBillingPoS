@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import java.util.Objects;
 
@@ -61,7 +62,9 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         FirebaseUser currentUser = auth.getCurrentUser();
         if(currentUser != null) {
             //some one already logged in
-            informing_user();
+            Intent splashIntent = new Intent(Registration.this, LandingScreen.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(splashIntent);
+            finish();
         }
     }
 
@@ -106,8 +109,8 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
                     .addOnCompleteListener(this, task -> {
                         if(task.isSuccessful()) {
                             progress_bar(false);
-                            companyVM.writeAdminToCFS(Objects.requireNonNull(auth.getCurrentUser()).getUid(),admin);
-                            informing_user();
+                            companyVM.writeAdminToCFS(admin);
+                            informing_user(company_name);
                         } else {
                             progress_bar(false);
                         }
@@ -118,7 +121,18 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    void informing_user() {
+    void setCompanyName(String company_name) {
+        if(auth.getCurrentUser() != null) {
+            UserProfileChangeRequest createCompany =
+                    new UserProfileChangeRequest.Builder()
+                            .setDisplayName(company_name)
+                            .build();
+            auth.getCurrentUser().updateProfile(createCompany);
+        }
+    }
+
+    void informing_user(String company_name) {
+        setCompanyName(company_name);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         String registered = getString(R.string.registered);
         String success = getString(R.string.success);

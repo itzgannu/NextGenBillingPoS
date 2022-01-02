@@ -3,9 +3,12 @@ package mu.psi.nextgen;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Objects;
 
 import mu.psi.nextgen.databinding.ActivityLandingScreenBinding;
 
@@ -13,7 +16,7 @@ public class LandingScreen extends AppCompatActivity {
 
     ActivityLandingScreenBinding binding;
 
-    FirebaseAuth auth;
+    FirebaseAuth auth; String company_name = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +28,9 @@ public class LandingScreen extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         auth = FirebaseAuth.getInstance();
+        company_name = Objects.requireNonNull(auth.getCurrentUser()).getDisplayName();
+
+
     }
 
     @Override

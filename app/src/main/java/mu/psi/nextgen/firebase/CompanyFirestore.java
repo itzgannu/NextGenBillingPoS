@@ -1,5 +1,6 @@
 package mu.psi.nextgen.firebase;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Map;
@@ -12,63 +13,108 @@ import mu.psi.nextgen.models.company.Staff;
 public class CompanyFirestore {
 
     private final FirebaseFirestore fStore;
+    private final FirebaseAuth auth;
+
+    private final String FIRST_COLLECTION_NAME = "MuPsiCorp";
+    String FIRST_DOCUMENT_NAME = "CompanyName";
+    private final String SECOND_COLLECTION_NAME_USERS = "WorkForce";
+    private final String SECOND_COLLECTION_NAME_BRANCHES = "Branches";
 
     public CompanyFirestore() {
-        this.fStore =FirebaseFirestore.getInstance();
+        this.fStore = FirebaseFirestore.getInstance();
+        this.auth = FirebaseAuth.getInstance();
     }
 
     public void createBranchRegistration(String company_name) {
-        Branch branch = new Branch(company_name, "NR", "NR");
-        Map<String, Object> branchMap = branch.toMap();
-        String branch_name = branch.getBranch_name();
+        if(auth.getCurrentUser() != null) {
+            FIRST_DOCUMENT_NAME = company_name;
 
-        fStore.collection(company_name)
-                .document(branch_name)
-                .set(branchMap);
+            Branch branch = new Branch(FIRST_DOCUMENT_NAME, "NR", "NR");
+            Map<String, Object> branchMap = branch.toMap();
+            String branch_name = branch.getBranch_name();
+
+            fStore.collection(FIRST_COLLECTION_NAME)
+                    .document(FIRST_DOCUMENT_NAME)
+                    .collection(SECOND_COLLECTION_NAME_BRANCHES)
+                    .document(branch_name)
+                    .set(branchMap);
+        }
     }
 
-    public void deleteBranchRegistration(String company_name) {
-        String branch_name = "NR";
+    public void deleteBranchRegistration() {
+        if(auth.getCurrentUser() != null) {
+            FIRST_DOCUMENT_NAME = auth.getCurrentUser().getDisplayName();
+            String branch_name = "NR";
 
-        fStore.collection(company_name)
-                .document(branch_name)
-                .delete();
+            fStore.collection(FIRST_COLLECTION_NAME)
+                    .document(FIRST_DOCUMENT_NAME)
+                    .collection(SECOND_COLLECTION_NAME_BRANCHES)
+                    .document(branch_name)
+                    .delete();
+        }
     }
 
-    public void createAdmin(String uuid, Admin admin) {
-        Map<String, Object> adminMap = admin.toMap();
-        String company_name = admin.getCompany_name();
+    public void createAdmin(Admin admin) {
+        if(auth.getCurrentUser() != null) {
+            String uuid = auth.getCurrentUser().getUid();
+            Map<String, Object> adminMap = admin.toMap();
+            FIRST_DOCUMENT_NAME = admin.getCompany_name();
 
-        fStore.collection(company_name)
-                .document(uuid)
-                .set(adminMap);
+            fStore.collection(FIRST_COLLECTION_NAME)
+                    .document(FIRST_DOCUMENT_NAME)
+                    .collection(SECOND_COLLECTION_NAME_USERS)
+                    .document(uuid)
+                    .set(adminMap);
+        }
     }
 
-    public void createCashier(String uuid, Cashier cashier) {
-        Map<String, Object> cashierMap = cashier.toMap();
-        String company_name = cashier.getCompany_name();
+    public void createCashier(Cashier cashier) {
+        if(auth.getCurrentUser() != null) {
+            String uuid = auth.getCurrentUser().getUid();
+            Map<String, Object> cashierMap = cashier.toMap();
+            FIRST_DOCUMENT_NAME = cashier.getCompany_name();
 
-        fStore.collection(company_name)
-                .document(uuid)
-                .set(cashierMap);
+            fStore.collection(FIRST_COLLECTION_NAME)
+                    .document(FIRST_DOCUMENT_NAME)
+                    .collection(SECOND_COLLECTION_NAME_USERS)
+                    .document(uuid)
+                    .set(cashierMap);
+        }
     }
 
-    public void createWorker(String uuid, Staff staff) {
-        Map<String, Object> workerMap = staff.toMap();
-        String company_name = staff.getCompany_name();
+    public void createWorker(Staff staff) {
+        if(auth.getCurrentUser() != null) {
+            String uuid = auth.getCurrentUser().getUid();
+            Map<String, Object> staffMap = staff.toMap();
+            FIRST_DOCUMENT_NAME = staff.getCompany_name();
 
-        fStore.collection(company_name)
-                .document(uuid)
-                .set(workerMap);
+            fStore.collection(FIRST_COLLECTION_NAME)
+                    .document(FIRST_DOCUMENT_NAME)
+                    .collection(SECOND_COLLECTION_NAME_USERS)
+                    .document(uuid)
+                    .set(staffMap);
+        }
+    }
+
+    public void readWorkForce() {
+        if(auth.getCurrentUser() != null) {
+
+        }
+
     }
 
     public void createBranch(Branch branch) {
-        Map<String, Object> branchMap = branch.toMap();
-        String company_name = branch.getCompany_name();
-        String branch_name = branch.getBranch_name();
+        if(auth.getCurrentUser() != null) {
 
-        fStore.collection(company_name)
-                .document(branch_name)
-                .set(branchMap);
+            Map<String, Object> branchMap = branch.toMap();
+            FIRST_DOCUMENT_NAME = branch.getCompany_name();
+            String branch_name = branch.getBranch_name();
+
+            fStore.collection(FIRST_COLLECTION_NAME)
+                    .document(FIRST_DOCUMENT_NAME)
+                    .collection(SECOND_COLLECTION_NAME_BRANCHES)
+                    .document(branch_name)
+                    .set(branchMap);
+        }
     }
 }

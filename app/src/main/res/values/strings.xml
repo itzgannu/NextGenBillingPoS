@@ -31,6 +31,10 @@
     <string name="error_invalid_email">ENTER A VALID EMAIL ID</string>
     <string name="error_name_minimum_two">FULL NAME NEEDS TO BE MINIMUM 2 CHARACTERS</string>
     <string name="error_company_minimum_two">COMPANY NAME NEEDS TO BE MINIMUM 2 CHARACTERS</string>
+
+    <!-- Navigation / Fragments -->
+    <string name="stores">STORES</string>
+    <string name="more">MORE</string>
     <string name="loading">Loading</string>
 
 </resources>

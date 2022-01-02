@@ -26,15 +26,13 @@ public class CompanyVM extends AndroidViewModel {
         super(application);
     }
 
-    public void writeAdminToCFS(String uuid, Admin admin) {
-        String company_name = admin.getCompany_name();
-        companyFirestore.createAdmin(uuid, admin);
-        companyFirestore.createBranchRegistration(company_name);
+    public void writeAdminToCFS(Admin admin) {
+        companyFirestore.createAdmin(admin);
+        companyFirestore.createBranchRegistration(admin.getCompany_name());
     }
 
     public void writeFirstBranchToCFS(Branch branch) {
-        String company_name = branch.getCompany_name();
-        companyFirestore.deleteBranchRegistration(company_name);
+        companyFirestore.deleteBranchRegistration();
         companyFirestore.createBranch(branch);
     }
 
