@@ -6,17 +6,17 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Admin implements Serializable {
-    String email, full_name, company_name;
-    final String role = "admin";
+public class WorkForce implements Serializable {
+    String email, full_name, company_name, role;
 
-    public Admin() {
+    public WorkForce() {
     }
 
-    public Admin(String email, String full_name, String company_name) {
+    public WorkForce(String email, String full_name, String company_name, String role) {
         this.email = email;
         this.full_name = full_name;
         this.company_name = company_name;
+        this.role = role;
     }
 
     public String getEmail() {
@@ -45,6 +45,10 @@ public class Admin implements Serializable {
 
     public String getRole() {
         return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Exclude

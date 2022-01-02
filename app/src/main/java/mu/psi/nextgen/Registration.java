@@ -19,13 +19,13 @@ import java.util.Objects;
 
 import mu.psi.nextgen.databinding.ActivityRegistrationBinding;
 import mu.psi.nextgen.models.company.Admin;
-import mu.psi.nextgen.view.model.AdminVM;
+import mu.psi.nextgen.view.model.CompanyVM;
 
 public class Registration extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
 
     ActivityRegistrationBinding binding;
 
-    private FirebaseAuth auth; AdminVM adminVM;
+    private FirebaseAuth auth; CompanyVM companyVM;
 
     Dialog dialog;
     AlertDialog.Builder builder;
@@ -39,7 +39,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         setContentView(this.binding.getRoot());
 
         auth = FirebaseAuth.getInstance();
-        adminVM = AdminVM.getInstance(getApplication());
+        companyVM = CompanyVM.getInstance(getApplication());
 
         builder = new AlertDialog.Builder(this);
         builder.setView(R.layout.progress_bar);
@@ -106,7 +106,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
                     .addOnCompleteListener(this, task -> {
                         if(task.isSuccessful()) {
                             progress_bar(false);
-                            adminVM.writeAdminToCFS(Objects.requireNonNull(auth.getCurrentUser()).getUid(),admin);
+                            companyVM.writeAdminToCFS(Objects.requireNonNull(auth.getCurrentUser()).getUid(),admin);
                             informing_user();
                         } else {
                             progress_bar(false);
