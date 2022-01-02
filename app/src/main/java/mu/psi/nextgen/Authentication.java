@@ -113,16 +113,9 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     }
 
     void redirecting_to_place_holder() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        String registered = getString(R.string.registered);
-        String success = getString(R.string.success);
-        String okay = getString(R.string.okay);
-        builder.setMessage(registered)
-                .setTitle(success);
-        builder.setPositiveButton(okay, (dialog, id) -> dialog.dismiss());
-        builder.create();
-        builder.show();
-        //go to other screen
+        Intent splashIntent = new Intent(Authentication.this, LandingScreen.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(splashIntent);
+        finish();
     }
 
     void onClickSignUp() {

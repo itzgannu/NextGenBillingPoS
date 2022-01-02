@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NextGenBillingPoS">
         <activity
+            android:name=".LandingScreen"
+            android:exported="false" />
+        <activity
             android:name=".Registration"
             android:exported="false" />
         <activity

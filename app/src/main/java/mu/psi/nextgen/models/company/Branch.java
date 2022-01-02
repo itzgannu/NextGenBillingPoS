@@ -1,8 +1,10 @@
 package mu.psi.nextgen.models.company;
 
-import androidx.annotation.NonNull;
+import com.google.firebase.firestore.Exclude;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Branch implements Serializable {
     String company_name, branch_name, branch_location;
@@ -40,13 +42,14 @@ public class Branch implements Serializable {
         this.branch_location = branch_location;
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return "Branch{" +
-                "company_name='" + company_name + '\'' +
-                ", branch_name='" + branch_name + '\'' +
-                ", branch_location='" + branch_location + '\'' +
-                '}';
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("branch_name", branch_name);
+        result.put("branch_location", branch_location);
+        result.put("company_name", company_name);
+
+        return result;
     }
 }

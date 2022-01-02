@@ -6,14 +6,14 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Admin implements Serializable {
+public class Staff implements Serializable {
     String email, full_name, company_name;
-    final String role = "admin";
+    final String role = "staff";
 
-    public Admin() {
+    public Staff() {
     }
 
-    public Admin(String email, String full_name, String company_name) {
+    public Staff(String email, String full_name, String company_name) {
         this.email = email;
         this.full_name = full_name;
         this.company_name = company_name;
